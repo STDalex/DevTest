@@ -1,0 +1,5 @@
+c:\Projects\DeviceTest\DeviceTest\bin\Debug\DeviceTest.exe
+c:\Projects\DeviceTest\DeviceTest\bin\Debug\DeviceTest.pdb
+c:\Projects\DeviceTest\DeviceTest\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\Projects\DeviceTest\DeviceTest\obj\x86\Debug\DeviceTest.exe
+c:\Projects\DeviceTest\DeviceTest\obj\x86\Debug\DeviceTest.pdb
