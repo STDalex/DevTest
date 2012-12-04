@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<config>
+<device>
+<Name>РД-01 S2</Name>
+<file>test_tpc_1100_2000.xml</file>
+<file>test_tpc_2100_1000.xml</file>
+<file>test_DVB_S2.xml</file>
+</device>
+<device>
+<Name>Нс-Д27</Name>
+<file>test_tpc_1100_2000.xml</file>
+<file>test_tpc_2100_1000.xml</file>
+</device>
+</config>

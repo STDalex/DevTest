@@ -4,80 +4,119 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Data;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace DeviceTest
 {
-    public class MyWebRequest
+    public class WebFetch
     {
-        private WebRequest request;
-        private Stream dataStream;
-        private string status;
-
-        public String Status
+        private string m_url;
+        private DataSet ds;
+              
+        public WebFetch(string url)
         {
-            get
+            m_url = url;
+            ds = new DataSet();
+        }
+
+        public void UploadFile(string uploadUrl, string fileToUpload)
+        {
+            WebClient wc = new WebClient();
+            wc.Headers["Content-type"] = "text/xml";
+            try
             {
-                return status;
+                wc.UploadFile(uploadUrl, "POST", fileToUpload);
+                Console.WriteLine("Config file is upload to "+uploadUrl+" successfully");
             }
-            set
+            catch (Exception exc)
             {
-                status = value;
+                Console.WriteLine("Problem with upload config file to "+uploadUrl+" " + exc.Message);
             }
+            wc.Dispose();
         }
 
-        public MyWebRequest(string url)
+        public void GetResponse(string url)
         {
-            request = WebRequest.Create(url);
-        }
-
-        public MyWebRequest(string url, string method)
-            : this(url)
-        {
-
-            if (method.Equals("GET") || method.Equals("POST"))
+            try
             {
-                request.Method = method;
+                WebClient client = new WebClient();
+                client.DownloadFile(url,"resp.xml");
+                ds.ReadXml("resp.xml");
             }
-            else
+            catch (WebException webEx)
             {
-                throw new Exception("Invalid Method Type");
+                Console.WriteLine(webEx.ToString());
+                if (webEx.Status == WebExceptionStatus.ConnectFailure)
+                {
+                    Console.WriteLine("Are you behind a firewall?  If so, go through the proxy server.");
+                }
             }
         }
 
-        public MyWebRequest(string url, string method, string data)
-            : this(url, method)
+        public System.Collections.ArrayList GetDevicesURL()
         {
-
-            string postData = data;
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-            dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
+            System.Collections.ArrayList reference = new System.Collections.ArrayList();
+            foreach (DataTable dt in ds.Tables)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    string[] dev = new string[2];
+                    dev[0] = dt.TableName;
+                    dev[1] = dt.Rows[i]["Адрес"].ToString();
+                    reference.Add(dev);
+                }
+            }
+            return reference;
         }
 
-        public string GetResponse()
+        public Tuple<string,string,double,double> GetDemValues(string[] device)
         {
-            // Get the original response.
-            WebResponse response = request.GetResponse();
-
-            this.Status = ((HttpWebResponse)response).StatusDescription;
-
-            // Get the stream containing all content returned by the requested server.
-            dataStream = response.GetResponseStream();
-            Encoding encode = System.Text.Encoding.GetEncoding("windows-1251");
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream, encode);
-
-            // Read the content fully up to the end.
-            string responseFromServer = reader.ReadToEnd();
-            // Clean up the streams.
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-
-            return responseFromServer;
+            string name = device[0];
+            string address = device[1];
+            string dSync = "";
+            double dInfRate = 0;
+            double EbN0 = 0;
+            DataTable dt = ds.Tables[name];
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (dt.Rows[i]["Адрес"].ToString() == address)
+                {
+                    dSync = dt.Rows[i]["Синхронизация демодулятора, декодера, УКС"].ToString();
+                    dInfRate = Convert.ToDouble(dt.Rows[i]["Инф. скорость, кбит/с"].ToString());
+                    EbN0 = Convert.ToDouble(dt.Rows[i]["Eb/No, дБ"].ToString().Replace(".",","));
+                    break;
+                }
+            }
+            name = name + "/" + address;
+            var device_values = Tuple.Create(name, dSync, dInfRate, EbN0);
+            return device_values;
         }
+
+        private void ParseTable(DataTable dt)
+        {
+            Console.WriteLine(dt.TableName);
+            ParseRows(dt);
+            foreach (DataRelation dr in dt.ChildRelations)
+            {
+                ParseTable(dr.ChildTable);
+            }
+        }
+
+        private void ParseRows(DataTable dt)
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    Console.Write(dc.ColumnName.ToString() + "=");
+                    Console.WriteLine(dt.Rows[i][dc.ColumnName].ToString() + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+
 
     }
 
