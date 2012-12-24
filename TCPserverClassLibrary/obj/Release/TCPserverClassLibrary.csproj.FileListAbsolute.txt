@@ -1,0 +1,10 @@
+E:\Projects\Csharp\BCwpf\TCPserverClassLibrary\bin\Release\TCPserverClassLibrary.dll
+E:\Projects\Csharp\BCwpf\TCPserverClassLibrary\bin\Release\TCPserverClassLibrary.pdb
+E:\Projects\Csharp\BCwpf\TCPserverClassLibrary\obj\Release\ResolveAssemblyReference.cache
+E:\Projects\Csharp\BCwpf\TCPserverClassLibrary\obj\Release\TCPserverClassLibrary.dll
+E:\Projects\Csharp\BCwpf\TCPserverClassLibrary\obj\Release\TCPserverClassLibrary.pdb
+C:\Projects\Csharp\ServerBC\TCPserverClassLibrary\bin\Release\TCPserverClassLibrary.dll
+C:\Projects\Csharp\ServerBC\TCPserverClassLibrary\bin\Release\TCPserverClassLibrary.pdb
+C:\Projects\Csharp\ServerBC\TCPserverClassLibrary\obj\Release\ResolveAssemblyReference.cache
+C:\Projects\Csharp\ServerBC\TCPserverClassLibrary\obj\Release\TCPserverClassLibrary.dll
+C:\Projects\Csharp\ServerBC\TCPserverClassLibrary\obj\Release\TCPserverClassLibrary.pdb

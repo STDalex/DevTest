@@ -13,12 +13,10 @@ namespace DeviceTest
     public class WebFetch
     {
         private string m_url;
-        private DataSet ds;
               
         public WebFetch(string url)
         {
             m_url = url;
-            ds = new DataSet();
         }
 
         public void UploadFile(string uploadUrl, string fileToUpload)
@@ -41,9 +39,11 @@ namespace DeviceTest
         {
             try
             {
+                //DataSet ds = new DataSet();
                 WebClient client = new WebClient();
                 client.DownloadFile(url,"resp.xml");
-                ds.ReadXml("resp.xml");
+                //ds.ReadXml("resp.xml");
+                client.Dispose();
             }
             catch (WebException webEx)
             {
@@ -57,41 +57,80 @@ namespace DeviceTest
 
         public System.Collections.ArrayList GetDevicesURL()
         {
-            System.Collections.ArrayList reference = new System.Collections.ArrayList();
-            foreach (DataTable dt in ds.Tables)
+          //  DataSet ds = new DataSet();
+          //  ds.ReadXml("resp.xml");
+            DataSet ds = DataSet();
+            if (ds != null)
             {
-                for (int i = 0; i < dt.Rows.Count; i++)
+                System.Collections.ArrayList reference = new System.Collections.ArrayList();
+                foreach (DataTable dt in ds.Tables)
                 {
-                    string[] dev = new string[2];
-                    dev[0] = dt.TableName;
-                    dev[1] = dt.Rows[i]["Адрес"].ToString();
-                    reference.Add(dev);
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        string[] dev = new string[2];
+                        dev[0] = dt.TableName;
+                        dev[1] = dt.Rows[i]["Адрес"].ToString();
+                        reference.Add(dev);
+                    }
                 }
+                return reference;
             }
-            return reference;
+            else
+                return null;
         }
 
         public Tuple<string,string,double,double> GetDemValues(string[] device)
         {
-            string name = device[0];
-            string address = device[1];
-            string dSync = "";
-            double dInfRate = 0;
-            double EbN0 = 0;
-            DataTable dt = ds.Tables[name];
-            for (int i = 0; i < dt.Rows.Count; i++)
+            //DataSet ds = new DataSet();
+            //ds.ReadXml("resp.xml");
+            DataSet ds = DataSet();
+            if (ds != null)
             {
-                if (dt.Rows[i]["Адрес"].ToString() == address)
+                string name = device[0];
+                string address = device[1];
+                string dSync = "";
+                double dInfRate = 0;
+                double EbN0 = 0;
+                try
                 {
-                    dSync = dt.Rows[i]["Синхронизация демодулятора, декодера, УКС"].ToString();
-                    dInfRate = Convert.ToDouble(dt.Rows[i]["Инф. скорость, кбит/с"].ToString());
-                    EbN0 = Convert.ToDouble(dt.Rows[i]["Eb/No, дБ"].ToString().Replace(".",","));
-                    break;
+                    DataTable dt = ds.Tables[name];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        if (dt.Rows[i]["Адрес"].ToString() == address)
+                        {
+                            dSync = dt.Rows[i]["Синхронизация демодулятора, декодера, УКС"].ToString();
+                            dInfRate = Convert.ToDouble(dt.Rows[i]["Инф. скорость, кбит/с"].ToString());
+                            EbN0 = Convert.ToDouble(dt.Rows[i]["Eb/No, дБ"].ToString().Replace(".", ","));
+                            break;
+                        }
+                    }
+                    name = name + "/" + address;
+                    var device_values = Tuple.Create(name, dSync, dInfRate, EbN0);
+                    return device_values;
+                }
+                catch (Exception exc)
+                {
+                    Console.WriteLine(exc.Message);
+                    return null;
                 }
             }
-            name = name + "/" + address;
-            var device_values = Tuple.Create(name, dSync, dInfRate, EbN0);
-            return device_values;
+            else
+                return null;
+        }
+
+        private DataSet DataSet()
+        {
+            try
+            {
+                DataSet ds = new DataSet();
+                ds.ReadXml("resp.xml");
+                return ds;
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+                return null;
+            }
         }
 
         private void ParseTable(DataTable dt)

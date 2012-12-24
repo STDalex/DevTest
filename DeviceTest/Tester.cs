@@ -7,6 +7,7 @@ using System.IO;
 using System.Data;
 using System.Xml;
 using System.Xml.Linq;
+using System.Collections;
 
 namespace DeviceTest
 {
@@ -47,13 +48,23 @@ namespace DeviceTest
             return m_ds_config.Tables["Options"].Rows[0]["НастройкаДемодулятора"].ToString();
         }
 
-        public string GetUVGSuploadFile()
+        public string GetDeviceUploadFile(string path)
         {
-            return m_ds_config.Tables["Options"].Rows[0]["НастройкаУВГС"].ToString();
+            return path + "\\" + m_ds_config.Tables["Options"].Rows[0]["НастройкаДемодулятора"].ToString();
+        }
+
+        public Hashtable GetUVGSuploadFile()
+        {
+            Hashtable result = new Hashtable();
+            DataTable dt = m_ds_config.Tables["НастройкаУВГС"];
+            for (int i = 0; i < dt.Rows.Count; i++)
+                result.Add(dt.Rows[i]["Key"].ToString(), dt.Rows[i]["Value"].ToString());
+            return result;
+            //return m_ds_config.Tables["Options"].Rows[0]["НастройкаУВГС"].ToString();
         }
 
 
-        public void DeviceTest(Tuple<string,string,double,double> data)
+        public void DeviceTest(Tuple<string, string, double, double> data)
         {
             DataTable tb = m_ds_config.Tables["expected_values"];
 
@@ -136,7 +147,7 @@ namespace DeviceTest
 
         private void msg(string dName, string test_name, string dvalue, string expected_value)
         {
-            Console.WriteLine("WARRNING!!! "+dName+" has the defect: "+test_name+". It is "+dvalue+", but should be "+expected_value);
+            Console.WriteLine("\nWARRNING!!! "+dName+" has the defect: "+test_name+". It is "+dvalue+", but should be "+expected_value+"\n");
         }
         #endregion
 

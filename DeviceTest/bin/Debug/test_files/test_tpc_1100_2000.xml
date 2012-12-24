@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<test>
+  <devices><Name>Нс-Д27</Name></devices>
+  <devices><Name>ПДУ-В2</Name></devices>
+  <devices><Name>ЦПУ-А2</Name></devices>
+  <devices><Name>СД-01</Name></devices>
+  <devices><Name>РД-01</Name></devices>
+  <devices><Name>РД-01 S2</Name></devices>
+  <devices><Name>РД-01 E S2</Name></devices>
+  <devices><Name>МПДО</Name></devices>
+  <devices><Name>МПДО Е</Name></devices>
+  <devices><Name>МПДО Е S2</Name></devices>
+  <devices><Name>МПДО E TCC</Name></devices>
+  <devices><Name>МПДО S2</Name></devices>
+  <devices><Name>МПДО TCC</Name></devices>
+  <Options>
+    <НастройкаДемодулятора>test_tcp_1100_2000_device_settings.xml</НастройкаДемодулятора>
+    
+    <НастройкаУВГС>
+        <Key>Несущая частота</Key>
+        <Value>1100</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Частота дискретизации</Key>
+        <Value>2000000</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Формат файла</Key>
+        <Value>7</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Имя файла</Key>
+        <Value>C:\Users\FM4_TPC_3_4_2964_16.bit</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Аттенюатор</Key>
+        <Value>10</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Усиление</Key>
+        <Value>6</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Инверсия спектра</Key>
+        <Value>false</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Выход</Key>
+        <Value>true</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Кэширование</Key>
+        <Value>true</Value>
+    </НастройкаУВГС>
+    <НастройкаУВГС>
+        <Key>Циклическое воспроизведение</Key>
+        <Value>true</Value>
+    </НастройкаУВГС>
+
+  </Options>
+  <expected_values>
+    <Синхронизация_демодулятора_декодера_УКС>Green</Синхронизация_демодулятора_декодера_УКС>
+    <Инф_скорость_кбит_с_min>1911,0</Инф_скорость_кбит_с_min>
+    <Инф_скорость_кбит_с_max>1911,4</Инф_скорость_кбит_с_max>
+    <Eb_N0_min>11,0</Eb_N0_min>
+    <Eb_N0_max>13,0</Eb_N0_max>
+    <АРУ_min>-13</АРУ_min>
+    <АРУ_max>-8</АРУ_max>
+    <ЦАРУ_min>0</ЦАРУ_min>
+    <ЦАРУ_max>2</ЦАРУ_max>
+  </expected_values>
+</test>
