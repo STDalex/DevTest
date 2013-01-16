@@ -26,7 +26,7 @@ namespace DeviceTest
             try
             {
                 wc.UploadFile(uploadUrl, "POST", fileToUpload);
-                Console.WriteLine("Config file is upload to "+uploadUrl+" successfully");
+             //   Console.WriteLine("Config file is upload to "+uploadUrl+" successfully");
             }
             catch (Exception exc)
             {
@@ -39,10 +39,8 @@ namespace DeviceTest
         {
             try
             {
-                //DataSet ds = new DataSet();
                 WebClient client = new WebClient();
                 client.DownloadFile(url,"resp.xml");
-                //ds.ReadXml("resp.xml");
                 client.Dispose();
             }
             catch (WebException webEx)
@@ -57,8 +55,6 @@ namespace DeviceTest
 
         public System.Collections.ArrayList GetDevicesURL()
         {
-          //  DataSet ds = new DataSet();
-          //  ds.ReadXml("resp.xml");
             DataSet ds = DataSet();
             if (ds != null)
             {
@@ -79,10 +75,8 @@ namespace DeviceTest
                 return null;
         }
 
-        public Tuple<string,string,double,double> GetDemValues(string[] device)
+        public Tuple<string,string,double,double,int,int> GetDemValues(string[] device)
         {
-            //DataSet ds = new DataSet();
-            //ds.ReadXml("resp.xml");
             DataSet ds = DataSet();
             if (ds != null)
             {
@@ -91,6 +85,8 @@ namespace DeviceTest
                 string dSync = "";
                 double dInfRate = 0;
                 double EbN0 = 0;
+                int aru = 0;
+                int daru = 0;
                 try
                 {
                     DataTable dt = ds.Tables[name];
@@ -100,12 +96,14 @@ namespace DeviceTest
                         {
                             dSync = dt.Rows[i]["Синхронизация демодулятора, декодера, УКС"].ToString();
                             dInfRate = Convert.ToDouble(dt.Rows[i]["Инф. скорость, кбит/с"].ToString());
-                            EbN0 = Convert.ToDouble(dt.Rows[i]["Eb/No, дБ"].ToString().Replace(".", ","));
+                            EbN0 = Convert.ToDouble(dt.Rows[i]["Eb/No, дБ"].ToString().Replace(".", ",").Replace("С/Ш = ", ""));
+                            aru = Convert.ToInt32(dt.Rows[i]["ARU"].ToString());
+                            daru = Convert.ToInt32(dt.Rows[i]["DARU"].ToString());
                             break;
                         }
                     }
                     name = name + "/" + address;
-                    var device_values = Tuple.Create(name, dSync, dInfRate, EbN0);
+                    var device_values = Tuple.Create(name, dSync, dInfRate, EbN0, aru, daru);
                     return device_values;
                 }
                 catch (Exception exc)

@@ -1,0 +1,7 @@
+C:\Projects\DeviceTest\DeviceTest\bin\Release\DeviceTest.exe
+C:\Projects\DeviceTest\DeviceTest\bin\Release\DeviceTest.pdb
+C:\Projects\DeviceTest\DeviceTest\bin\Release\TCPserverClassLibrary.dll
+C:\Projects\DeviceTest\DeviceTest\bin\Release\TCPserverClassLibrary.pdb
+C:\Projects\DeviceTest\DeviceTest\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Projects\DeviceTest\DeviceTest\obj\x86\Release\DeviceTest.exe
+C:\Projects\DeviceTest\DeviceTest\obj\x86\Release\DeviceTest.pdb

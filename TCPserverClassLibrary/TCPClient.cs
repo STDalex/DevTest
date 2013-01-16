@@ -49,24 +49,14 @@ namespace TCPserverClassLibrary
         {
             m_client = null;
             m_stream = null;
-            try
-            {
-                m_connectionIsLost = 0;
-                m_client = new TcpClient();
-                m_client.Connect(ip, port);
-                m_stream = m_client.GetStream();
-                m_IPEndPoint = m_client.Client.LocalEndPoint;
-                m_thisIP = m_client.Client.RemoteEndPoint;
-                m_stream.BeginRead(ReadData, 0, ReadData.Length, ReceiverCallback, null);
-                Thread lookingForServerThread = new Thread(LookingForServer);
-        //        lookingForServerThread.Start();
-            }
-            catch
-            {
-                if (m_client != null)
-                    m_client = null;
-                System.Windows.Forms.MessageBox.Show("не удалось установить соединение");
-            }
+            m_connectionIsLost = 0;
+            m_client = new TcpClient();
+            m_client.Connect(ip, port);
+            m_stream = m_client.GetStream();
+            m_IPEndPoint = m_client.Client.LocalEndPoint;
+            m_thisIP = m_client.Client.RemoteEndPoint;
+            m_stream.BeginRead(ReadData, 0, ReadData.Length, ReceiverCallback, null);
+            Thread lookingForServerThread = new Thread(LookingForServer);
         }
 
         public Action<TCPClient> DisconectClient_action;

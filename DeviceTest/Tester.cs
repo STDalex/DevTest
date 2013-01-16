@@ -15,20 +15,16 @@ namespace DeviceTest
     {
         private string m_config;
         private DataSet m_ds_config;
-        
+        private string m_dem_test_report;
+        private string m_result_report;
 
         public Tester(string config)
         {
-            try
-            {
-                m_config = config;
-                m_ds_config = new DataSet();
-                m_ds_config.ReadXml(config);
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc.Message);
-            }
+            m_config = config;
+            m_ds_config = new DataSet();
+            m_ds_config.ReadXml(config);
+            m_dem_test_report = "";
+            m_result_report = tests_name_tabel();
         }
 
         
@@ -60,11 +56,10 @@ namespace DeviceTest
             for (int i = 0; i < dt.Rows.Count; i++)
                 result.Add(dt.Rows[i]["Key"].ToString(), dt.Rows[i]["Value"].ToString());
             return result;
-            //return m_ds_config.Tables["Options"].Rows[0]["НастройкаУВГС"].ToString();
         }
 
 
-        public void DeviceTest(Tuple<string, string, double, double> data)
+        public void DeviceTest(Tuple<string, string, double, double, int, int> data)
         {
             DataTable tb = m_ds_config.Tables["expected_values"];
 
@@ -72,6 +67,8 @@ namespace DeviceTest
             string dSync = data.Item2;
             double dInfRate = data.Item3;
             double dEbN0 = data.Item4;
+            int dAru = data.Item5;
+            int dDaru = data.Item6;
 
             string expected_Sync = tb.Rows[0]["Синхронизация_демодулятора_декодера_УКС"].ToString();
             double expected_InfSpeed_min = Convert.ToDouble(tb.Rows[0]["Инф_скорость_кбит_с_min"].ToString());
@@ -83,72 +80,147 @@ namespace DeviceTest
             int expected_DARU_min = Convert.ToInt32(tb.Rows[0]["ЦАРУ_min"].ToString());
             int expected_DARU_max = Convert.ToInt32(tb.Rows[0]["ЦАРУ_max"].ToString());
 
-            if (IsInfSpeedOk(dName, dInfRate, expected_InfSpeed_min, expected_InfSpeed_max) &
+            if (IsSyncOk(dName, dSync, expected_Sync) &
+                IsInfSpeedOk(dName, dInfRate, expected_InfSpeed_min, expected_InfSpeed_max) &
                 IsEbN0Ok(dName, dEbN0, expected_EbN0_min, expected_EbN0_max) &
-                IsSyncOk(dName, dSync, expected_Sync))
+                IsARUOk(dName, dAru, expected_ARU_min, expected_ARU_max) &
+                IsDARUOk(dName, dDaru, expected_DARU_min, expected_DARU_max))
+            {
                 Console.WriteLine(dName + " is OK!!!");
+            }
+
+            string dem_test_row = m_dem_test_report;
+            m_result_report += demodulator_test_result(dName, dem_test_row);
+            m_dem_test_report = "";
+            
+            
         }
 
         #region tests
+
+        const string Sync_str = "синхронизация демодулятора, декодера и УКС";
+        const string InfRate_str = "Информационная скорость (кбит/с)";
+        const string SNR_str = "Соотношение сигнал/шум (дБ)";
+        const string ARU_str = "АРУ";
+        const string DARU_str = "ЦАРУ";
+
         private bool IsSyncOk(string dName, string dSync, string expected_Sync)
         {
+            bool test_result;
             if (dSync == expected_Sync)
-                return true;
+                test_result = true;
             else
             {
-                msg(dName, "синхронизация демодулятора, декодера и УКС", dSync, expected_Sync);
-                return false;
+                msg(dName, Sync_str, dSync, expected_Sync);
+                test_result = false;
             }
+            m_dem_test_report += test_result_row(test_result, dSync);
+            return test_result;
         }
 
         private bool IsInfSpeedOk(string dName, double dInfRate, double expected_InfSpeed_min, double expected_InfSpeed_max)
         {
+            bool test_result;
             if ((dInfRate <= expected_InfSpeed_max) && (dInfRate >= expected_InfSpeed_min))
-                return true;
+                test_result = true;
             else
             {
-                msg(dName, "Информационная скорость (кбит/с)", dInfRate.ToString(), "between " + expected_InfSpeed_min.ToString() + " and " + expected_InfSpeed_max.ToString());
-                return false;
+                msg(dName, InfRate_str, dInfRate.ToString(), "between " + expected_InfSpeed_min.ToString() + " and " + expected_InfSpeed_max.ToString());
+                test_result = false;
             }
+            m_dem_test_report += test_result_row(test_result, dInfRate.ToString());
+            return test_result;
         }
 
         private bool IsEbN0Ok(string dName, double dEbN0, double expected_EbN0_min, double expected_EbN0_max)
         {
+            bool test_result;
             if ((dEbN0 <= expected_EbN0_max) && (dEbN0 >= expected_EbN0_min))
-                return true;
+                test_result = true;
             else
             {
-                msg(dName, "Соотношение сигнал/шум (дБ)", dEbN0.ToString(), "between " + expected_EbN0_min.ToString() + " and " + expected_EbN0_max.ToString());
-                return false;
+                msg(dName, SNR_str, dEbN0.ToString(), "between " + expected_EbN0_min.ToString() + " and " + expected_EbN0_max.ToString());
+                test_result = false;
             }
+            m_dem_test_report += test_result_row(test_result, dEbN0.ToString());
+            return test_result;
         }
 
         private bool IsARUOk(string dName, int dARU, int expected_ARU_min, int expected_ARU_max)
         {
+            bool test_result;
             if ((dARU <= expected_ARU_max) && (dARU >= expected_ARU_min))
-                return true;
+                test_result = true;
             else
             {
-                msg(dName, "АРУ", dARU.ToString(), "between " + expected_ARU_min.ToString() + " and " + expected_ARU_max.ToString());
-                return false;
+                msg(dName, ARU_str, dARU.ToString(), "between " + expected_ARU_min.ToString() + " and " + expected_ARU_max.ToString());
+                test_result = false;
             }
+            m_dem_test_report += test_result_row(test_result, dARU.ToString());
+            return test_result;
         }
 
         private bool IsDARUOk(string dName, int dDARU, int expected_DARU_min, int expected_DARU_max)
         {
+            bool test_result;
             if ((dDARU <= expected_DARU_max) && (dDARU >= expected_DARU_min))
-                return true;
+                test_result = true;
             else
             {
-                msg(dName, "АРУ", dDARU.ToString(), "between " + expected_DARU_min.ToString() + " and " + expected_DARU_max.ToString());
-                return false;
+                msg(dName, DARU_str, dDARU.ToString(), "between " + expected_DARU_min.ToString() + " and " + expected_DARU_max.ToString());
+                test_result = false;
             }
+            m_dem_test_report += test_result_row(test_result, dDARU.ToString());
+            return test_result;
         }
 
         private void msg(string dName, string test_name, string dvalue, string expected_value)
         {
             Console.WriteLine("\nWARRNING!!! "+dName+" has the defect: "+test_name+". It is "+dvalue+", but should be "+expected_value+"\n");
         }
+
+        #endregion
+
+        #region html_report
+
+        private string tests_name_tabel()
+        {
+            string name_table="";
+            ArrayList test_names = new ArrayList();
+            test_names.Add("  Устройство  ");
+            test_names.Add(Sync_str);
+            test_names.Add(InfRate_str);
+            test_names.Add(SNR_str);
+            test_names.Add(ARU_str);
+            test_names.Add(DARU_str);
+
+            name_table += "<tr bgcolor = \"#AAAAAA\">";
+            foreach (string test_name in test_names)
+                name_table += "<td><strong>" + test_name + "</strong></td>";
+            name_table += "</tr>";
+            return name_table;
+        }
+
+        private string test_result_row(bool isTestPass, string value)
+        {
+            string color = isTestPass ? "#CEE2D3" : "Red";
+            string test_result = "<td valign=\"top\", bgcolor=\"" + color + "\">" + value + "</td>";
+            return test_result;
+        }
+
+        private string demodulator_test_result(string demodulator_name, string tests)
+        {
+            string result = "<tr bgcolor = \"#DDDDDD\"><td valign=\"top\">" + demodulator_name + "</td>" + tests + "</tr>";
+            return result;
+        }
+
+        public string TestResultHTML()
+        {
+            string result = "";
+            result = "<table><tbody><tr><td colspan=6><h3>" + m_config + "</h3></td></tr>" + m_result_report + "</tbody></table><br><br>";
+            return result;
+        }
+
         #endregion
 
     }

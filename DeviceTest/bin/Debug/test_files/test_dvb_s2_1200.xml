@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <test>
-  <devices><Name>Нс-Д27</Name></devices>
-  <devices><Name>ПДУ-В2</Name></devices>
-  <devices><Name>ЦПУ-А2</Name></devices>
-  <devices><Name>СД-01</Name></devices>
-  <devices><Name>РД-01</Name></devices>
   <devices><Name>РД-01 S2</Name></devices>
   <devices><Name>РД-01 E S2</Name></devices>
-  <devices><Name>МПДО</Name></devices>
-  <devices><Name>МПДО Е</Name></devices>
   <devices><Name>МПДО Е S2</Name></devices>
-  <devices><Name>МПДО E TCC</Name></devices>
   <devices><Name>МПДО S2</Name></devices>
-  <devices><Name>МПДО TCC</Name></devices>
-  <devices><Name>УПД-М</Name></devices>
-  <devices><Name>УПД-М Е</Name></devices>
   <devices><Name>УПД-М Е S2</Name></devices>
-  <devices><Name>УПД-М E TCC</Name></devices>
   <devices><Name>УПД-М S2</Name></devices>
-  <devices><Name>УПД-М TCC</Name></devices>
   <Options>
-    <НастройкаДемодулятора>test_tcp_2100_1000_device_settings.xml</НастройкаДемодулятора>
+    <НастройкаДемодулятора>test_dvb_s2_1200_device_settings.xml</НастройкаДемодулятора>
     <НастройкаУВГС>
         <Key>Несущая частота</Key>
-        <Value>2100</Value>
+        <Value>1200</Value>
     </НастройкаУВГС>
     <НастройкаУВГС>
         <Key>Частота дискретизации</Key>
-        <Value>1000000</Value>
+        <Value>14000000</Value>
     </НастройкаУВГС>
     <НастройкаУВГС>
-        <Key>Формат_файла</Key>
-        <Value>7</Value>
+        <Key>Формат файла</Key>
+        <Value>3</Value>
     </НастройкаУВГС>
     <НастройкаУВГС>
         <Key>Имя файла</Key>
-        <Value>C:\Users\FM4_TPC_3_4_2964_16.bit</Value>
+        <Value>C:\Users\S2_ASM++++000.bit</Value>
     </НастройкаУВГС>
     <НастройкаУВГС>
         <Key>Аттенюатор</Key>
@@ -43,7 +30,7 @@
     </НастройкаУВГС>
     <НастройкаУВГС>
         <Key>Усиление</Key>
-        <Value>6</Value>
+        <Value>1</Value>
     </НастройкаУВГС>
     <НастройкаУВГС>
         <Key>Инверсия спектра</Key>
@@ -61,16 +48,17 @@
         <Key>Циклическое воспроизведение</Key>
         <Value>true</Value>
     </НастройкаУВГС>
+
   </Options>
   <expected_values>
     <Синхронизация_демодулятора_декодера_УКС>Green</Синхронизация_демодулятора_декодера_УКС>
-    <Инф_скорость_кбит_с_min>955,3</Инф_скорость_кбит_с_min>
-    <Инф_скорость_кбит_с_max>955,7</Инф_скорость_кбит_с_max>
-    <Eb_N0_min>11,3</Eb_N0_min>
-    <Eb_N0_max>13,0</Eb_N0_max>
-    <АРУ_min>-21</АРУ_min>
-    <АРУ_max>-16</АРУ_max>
-    <ЦАРУ_min>-3</ЦАРУ_min>
-    <ЦАРУ_max>3</ЦАРУ_max>
+    <Инф_скорость_кбит_с_min>28000,0</Инф_скорость_кбит_с_min>
+    <Инф_скорость_кбит_с_max>32000,4</Инф_скорость_кбит_с_max>
+    <Eb_N0_min>16,1</Eb_N0_min>
+    <Eb_N0_max>19,0</Eb_N0_max>
+    <АРУ_min>-19</АРУ_min>
+    <АРУ_max>-9</АРУ_max>
+    <ЦАРУ_min>-8</ЦАРУ_min>
+    <ЦАРУ_max>-5</ЦАРУ_max>
   </expected_values>
 </test>
